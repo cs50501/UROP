@@ -1,0 +1,23 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+
+# Local CFD case data
+cases/
+outputs/
+
+# ANSYS files
+*.wbpj
+*.wbpz
+*_files/
+*.cas.h5
+*.dat.h5
+*.msh.h5
+
+# Logs
+*.log
+
+# Fluent-generated working files
+fluent-*
+FM_*/
