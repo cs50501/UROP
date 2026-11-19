@@ -1,0 +1,38 @@
+software:
+  fluent_version: "24.1"
+  processor_count: 4
+
+
+solver:
+  type: pressure_based
+  time: steady
+  flow_model: laminar
+  energy: false
+
+
+fluid:
+  name: blood
+  viscosity_model: newtonian
+  density_kg_m3: 1060
+  dynamic_viscosity_pa_s: 0.0035
+
+
+numerics:
+  pressure_velocity_coupling: SIMPLE
+  pressure_discretization: second-order
+  momentum_discretization: second-order-upwind
+
+
+run:
+  initialization: hybrid
+  iterations_per_batch: 100
+  max_iterations: 1500
+
+
+convergence:
+  residual_target: 0.00001
+  mass_imbalance_max_percent: 1.0
+
+
+mesh:
+  selected: medium

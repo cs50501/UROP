@@ -135,7 +135,7 @@ def import_geometry(case_name):
     root = Path(__file__).resolve().parents[1]
     case_dir = root / "cases" / case_name
     
-    geometry = [
+    geometry_candidates = [
         case_dir / "geometry.scdoc",
         case_dir / "geometry.stp",
         case_dir / "geometry.step"
@@ -162,7 +162,7 @@ def import_geometry(case_name):
         run_dir.mkdir(parents=True, exist_ok=True)
         
         session = pyfluent.launch_fluent(
-            product_version="24.1",
+            product_version=pyfluent.FluentVersion.v241,
             mode="meshing",
             precision="double",
             processor_count=4,

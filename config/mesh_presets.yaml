@@ -1,0 +1,28 @@
+presets:
+
+  coarse:
+    element_size_m: 0.00030
+    inflation:
+      enabled: true
+      method: first_layer_thickness
+      first_layer_height_m: 0.000015
+      layers: 8
+      growth_rate: 1.2
+
+  medium:
+    element_size_m: 0.00020
+    inflation:
+      enabled: true
+      method: first_layer_thickness
+      first_layer_height_m: 0.000010
+      layers: 8
+      growth_rate: 1.2
+
+  fine:
+    element_size_m: 0.00015
+    inflation:
+      enabled: true
+      method: first_layer_thickness
+      first_layer_height_m: 0.0000075
+      layers: 8
+      growth_rate: 1.2
