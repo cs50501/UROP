@@ -11,7 +11,7 @@ def inspect_geometry_zones(session, case_dir):
     print("\n" + "=" * 50)
     print("GEOMETRY BOUNDARY INSPECTION")
     print("=" * 50)
-
+    
     report = {
         "face_zone_ids": [],
         "face_zone_names": [],
@@ -19,18 +19,18 @@ def inspect_geometry_zones(session, case_dir):
         "warnings": [],
         "inspection_complete": False
     }
-
+    
     # Try the PyFluent meshing utilities first.
     # Availability may differ in PyFluent 0.37.2.
     try:
         utilities = session.meshing_utilities
-
+        
         zone_ids = utilities.get_face_zones(filter="*")
         report["face_zone_ids"] = list(zone_ids)
-
+        
         print(f"Face zones detected: {len(zone_ids)}")
         print(f"Zone IDs: {zone_ids}")
-
+        
         if zone_ids:
             try:
                 zone_names = (
@@ -38,12 +38,12 @@ def inspect_geometry_zones(session, case_dir):
                         zone_id_list=list(zone_ids)
                     )
                 )
-
+                
                 report["face_zone_names"] = list(zone_names)
-
+                
                 for zone_id, name in zip(zone_ids, zone_names):
                     print(f"  Zone {zone_id}: {name}")
-
+                    
                     try:
                         area = utilities.get_face_zone_area(
                             face_zone_id_list=[zone_id]
@@ -52,24 +52,24 @@ def inspect_geometry_zones(session, case_dir):
                         print(f"    Area: {area}")
                     except Exception as error:
                         print(f"    Area unavailable: {error}")
-
+                        
             except Exception as error:
                 report["warnings"].append(
                     f"Could not retrieve zone names: {error}"
                 )
-
+                
         report["inspection_complete"] = True
-
+        
     except Exception as error:
         print(f"Meshing utilities unavailable: {error}")
         report["warnings"].append(
             f"Meshing utilities inspection failed: {error}"
         )
-
+        
     # Try Fluent's traditional zone listing as a fallback.
     # The output may appear in the Fluent console.
     print("\nFluent boundary-zone listing:")
-
+    
     try:
         session.tui.boundary.manage.list()
     except TypeError:
@@ -79,22 +79,22 @@ def inspect_geometry_zones(session, case_dir):
             print(f"TUI listing unavailable: {error}")
     except Exception as error:
         print(f"TUI listing unavailable: {error}")
-
+        
     # Assess whether automated boundary assignment is safe.
     zone_count = len(report["face_zone_ids"])
-
+    
     if report["inspection_complete"] and zone_count < 3:
         report["warnings"].append(
             "Fewer than three face zones detected. "
             "Inlets, outlets and walls may not be separated."
         )
-
+        
     if not report["inspection_complete"]:
         report["warnings"].append(
             "Automatic zone count unavailable. "
             "Review the Fluent zone listing manually."
         )
-
+        
     report["requires_manual_review"] = (
         bool(report["warnings"])
         or not report["face_zone_names"]
@@ -111,22 +111,22 @@ def inspect_geometry_zones(session, case_dir):
             for name in report["face_zone_names"]
         )
     )
-
+    
     output_file = case_dir / "geometry_inspection.json"
-
+    
     output_file.write_text(
         json.dumps(report, indent=4),
         encoding="utf-8"
     )
-
+    
     print(f"\nInspection saved: {output_file}")
-
+    
     if report["requires_manual_review"]:
         print("STATUS: NEEDS MANUAL REVIEW")
     else:
         print("STATUS: BOUNDARY NAMES DETECTED")
         print("Visual verification is still required.")
-
+        
     return report
 
 
